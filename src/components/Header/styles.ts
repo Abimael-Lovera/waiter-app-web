@@ -13,7 +13,6 @@ export const Content = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 2px solid #fff;
 
   .page-details {
     h1 {
