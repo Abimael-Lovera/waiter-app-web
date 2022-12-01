@@ -1,4 +1,4 @@
-import { Overlay, ModalBody, OrderDetails } from './styles';
+import { Overlay, ModalBody, OrderDetails, Actions } from './styles';
 import closeIcon from '../../assets/images/close-icon.svg';
 import { Order } from '../../types/Order';
 import { formatCurrency } from '../utils/formatCurrency';
@@ -6,20 +6,29 @@ import { formatCurrency } from '../utils/formatCurrency';
 interface OrderModalProps {
   visible: boolean;
   order: Order | null;
+  onClose: () => void;
 }
 
-export function OrderModal({visible, order}: OrderModalProps) {
+export function OrderModal({visible, order,onClose}: OrderModalProps) {
   if(!visible || !order) {
     return null;
   }
 
+  // let total = 0;
+  // order.products.forEach(({product, quantity}) => {
+  //   total += product.price * quantity;
+  // });
+
+  const total = order.products.reduce((total, { product, quantity}) => {
+    return total + (product.price * quantity);
+  }, 0);
   return(
     <Overlay>
       <ModalBody>
         <header>
           <strong>Mesa {order.table}</strong>
 
-          <button type="button">
+          <button type="button" onClick={onClose}>
             <img src={closeIcon} alt="Icone de fechar" />
           </button>
         </header>
@@ -62,7 +71,23 @@ export function OrderModal({visible, order}: OrderModalProps) {
               </div>
             ))}
           </div>
+
+          <div className="total">
+            <span>Total</span>
+            <strong>{formatCurrency(total)}</strong>
+          </div>
         </OrderDetails>
+
+        <Actions>
+          <button className="primary" type="button">
+            <span>👨‍🍳</span>
+            <span>Iniciar Produção</span>
+          </button>
+          <button className="secondary" type="button">
+            Cancelar Pedido
+          </button>
+        </Actions>
+
       </ModalBody>
     </Overlay>
   );
